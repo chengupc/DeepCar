@@ -86,15 +86,31 @@ if __name__ == "__main__":
     
     imgPath = "./img"
     mkDir(imgPath)
-
+    
+    lib_path = os.path.abspath(os.path.join(os.getcwd(), "..")) + "/lib" + "/libart_driver.so"
+    so = cdll.LoadLibrary
+    lib = so(lib_path)
+    
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
 
-    timer = threading.Timer(0.5, fun_timer)
-    timer.start()
+    try:
+        car = "/dev/ttyUSB0"
+        if (lib.art_racecar_init(38400, car) < 0):
+            raise
+            pass
 
-    while (1):
-        pass
+        timer = threading.Timer(0.5, fun_timer)
+        timer.start()
 
+        while (1):
+            pass
+    except:
+        print
+        "error"
+
+    finally:
+        print
+        "finally"
 data = np.array(angleData)
 print "the angle data is saving>>>>>>>>>>> "
 np.save("tet.npy",data)
